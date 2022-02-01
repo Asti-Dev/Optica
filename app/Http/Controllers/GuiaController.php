@@ -323,7 +323,7 @@ class GuiaController extends Controller
 
                 for ($producto = 0; $producto < count($idproductos); $producto++) {
                     if ($idproductos[$producto] != '') {
-                        $guia->productos()->updateExistingPivot(
+                        $guia->productos()->attach(
                             $idproductos[$producto],
                             [
                                 'cantidad' => $cantidad[$producto],
@@ -334,7 +334,7 @@ class GuiaController extends Controller
 
                         $check = $stockProducto->stock - $cantidad[$producto];
                         if ($check < 0) {
-                            throw new \Exception("Producto: " . $stockProducto->marca . " " . $stockProducto->modelo . " Stock Insuficiente:" . $stockProducto->stock);
+                            throw new \Exception("Producto: " . $stockProducto->marca->nombre . " " . $stockProducto->modelo . " Stock Insuficiente:" . $stockProducto->stock);
                         }
                         $stockProducto->stock -= $cantidad[$producto];
                         $stockProducto->save();
@@ -348,7 +348,7 @@ class GuiaController extends Controller
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
-            return redirect()->route('guias.edit')->with('danger', $exception->getMessage());
+            return redirect()->route('guias.index')->with('danger', $exception->getMessage());
         }
 
         return redirect()->route('guias.index')

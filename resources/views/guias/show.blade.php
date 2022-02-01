@@ -227,7 +227,7 @@
                             <td>
                                 <?php
                                 foreach ($guia->productos as $producto) {
-                                    echo $producto->modelo . " ". $producto->marca . "<br>";
+                                    echo $producto->modelo . " ". $producto->marca->nombre . "<br>";
                                 }
                                     ?>
                             </td>
@@ -248,8 +248,8 @@
                             <th>Otros</th>
                             <td>
                                 <?php
-                                if ($guia->preio_otros != null) {
-                                echo  $moneda . $guia->preio_otros;
+                                if (isset($guia->precio_otros)) {
+                                echo  $moneda . $guia->precio_otros;
                                 }
                                 ?></td>
                         </tr>

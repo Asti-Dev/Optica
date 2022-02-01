@@ -92,6 +92,11 @@
             <p>{{ $message }}</p>
         </div>
     @endif
+    @if ($message = Session::get('danger'))
+        <div class="alert alert-danger">
+            <p>{{ $message }}</p>
+        </div>
+    @endif
 
     <table class="table table-bordered table-responsive">
         <thead class="thead-dark">
@@ -275,7 +280,7 @@
                     <td>{{ $signo . " " . $guia->precio_lente }}</td>
                     <td>
                         @foreach ($guia->productos as $producto)
-                            <p>{{ $producto->modelo . ' ' . $producto->marca }}</p><br>
+                            <p>{{ $producto->modelo . ' ' . $producto->marca->nombre }}</p><br>
                         @endforeach
                     </td>
                     <td>
