@@ -200,7 +200,7 @@ action="{{ route('guias.update', $guia->idguias) }}" method="POST">
 
         <div class="col text-center">
             <button type="submit" onclick="valorDefaultNumero(); valorDefaultTexto();totales();"
-                class="btn btn-primary">Crear</button>
+                class="btn btn-primary">Actualizar</button>
         </div>
 </form>
 @section('javascript')
