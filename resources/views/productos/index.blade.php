@@ -115,7 +115,7 @@
     @endif
 
 
-    <table class="table table-bordered table-responsive-lg">
+    <table class="table table-bordered table-responsive">
         <thead class="thead-dark">
             <tr class="">
                 <th scope="col" style="font-size:0.9rem">Acciones</th>

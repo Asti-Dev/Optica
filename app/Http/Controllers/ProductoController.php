@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductosExport;
+use App\Models\Marca;
 use App\Models\Producto;
+use App\Models\Proveedor;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -118,7 +120,7 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'proveedor' => 'required',
             'marca' => 'required',
             'modelo' => 'required',
@@ -129,30 +131,21 @@ class ProductoController extends Controller
             'fecha_adquisicion' => 'required',
         ]);
 
-        $modelo = strtoupper( $request->input('modelo'));
-        $color = strtoupper( $request->input('color'));
+        $codigoFecha = date('ymd', strtotime($validated['fecha_adquisicion']));
 
-        $producto = Producto::create($request->all()+
-            ['idproveedores' => $request->input('proveedor')]+
-            ['idmarcas' => $request->input('marca')]
+        $producto = Producto::create($validated +
+        ['idproveedores' => $validated['proveedor']]+
+        ['idmarcas' => $validated['marca']]
         );
-        if($request->stock == '0'){
+
+        if($validated['stock'] == '0'){
             $producto->acabado = Producto::SIACABADO;
         };
-        $producto->color = $color;
-        $producto->modelo = $modelo;
-        $producto->save();
 
-        $codigoFecha = strtotime($producto->fecha_adquisicion);
-        $codigoFecha = date('ymd', $codigoFecha);
-
-        $producto->barcode = $producto->proveedor->codigo .
-        $producto->marca->codigo . substr($modelo, 0 , 4)
-        . substr($color,0,2) . $codigoFecha
-        . round($producto->costo) . round($producto->precio_unitario);
+        $producto->barcode = $producto->idproductos . $producto->proveedor->codigo .
+        $producto->marca->codigo . $codigoFecha;
 
         $producto->save();
-
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto creado!');
@@ -189,7 +182,7 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        $request->validate([
+        $validated = $request->validate([
             'proveedor' => 'required',
             'marca' => 'required',
             'modelo' => 'required',
@@ -200,39 +193,21 @@ class ProductoController extends Controller
             'fecha_adquisicion' => 'required',
         ]);
 
-        $modelo = strtoupper( $request->input('modelo'));
-        $color = strtoupper( $request->input('color'));
+        $codigoFecha = date('ymd', strtotime($validated['fecha_adquisicion']));
 
-        $producto->update($request->all()+
-            ['idproveedores' => $request->input('proveedor')]+
-            ['idmarcas' => $request->input('marca')]
+        $producto->update($validated +
+        ['idproveedores' => $validated['proveedor']]+
+        ['idmarcas' => $validated['marca']]
         );
-        if($request->stock == '0'){
-            $producto->acabado = Producto::SIACABADO;
-        };
-        $producto->color = $color;
-        $producto->modelo = $modelo;
-        $producto->save();
 
-        $codigoFecha = strtotime($producto->fecha_adquisicion);
-        $codigoFecha = date('ymd', $codigoFecha);
+        $validated['stock'] == '0' ? 
+        $producto->acabado = Producto::SIACABADO : 
+        $producto->acabado = Producto::NOACABADO ;
+        
 
-        $producto->barcode = $producto->proveedor->codigo .
-        $producto->marca->codigo . substr($producto->modelo, 0 , 4)
-        . substr($producto->color,0,2) . $codigoFecha
-        . round($producto->costo) . round($producto->precio_unitario);
+        $producto->barcode = $producto->idproductos . $producto->proveedor->codigo .
+        $producto->marca->codigo . $codigoFecha;
 
-        $producto->save();
-
-        if($request->stock == '0'){
-
-            $producto->acabado = Producto::SIACABADO;
-        }
-        else{
-
-            $producto->acabado = Producto::NOACABADO;
-
-        };
         $producto->save();
 
         return redirect()->route('productos.index')

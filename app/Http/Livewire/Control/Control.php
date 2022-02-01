@@ -9,10 +9,11 @@ class Control extends Component
 {
     public $buscar;
     public $producto;
-    public $productos =[];
-    public $almacenProductos =[];
+    public $productos =[]; // productos escaneados
+    public $almacenProductos =[]; // productos en el sistema
     public $almacenProducto;
     public $picked;
+    public $almacenProductosExistentes = [];
 
     public function mount()
     {
@@ -51,7 +52,6 @@ class Control extends Component
 
     public function validar(){
         // comparar las cantidades del array productos con los que hay en la lista
-
         foreach ($this->productos as $key => $producto) {
             $almacenProducto = Producto::find($key);
 
@@ -68,6 +68,9 @@ class Control extends Component
                 $this->almacenProductos[$almacenProducto->idproductos]= $this->almacenProducto;
             }
         }
+        $this->almacenProductosExistentes = Producto::where('stock', '!=' , 0)->get();
+        $this->almacenProductosExistentes = collect($this->almacenProductosExistentes)
+        ->whereNotIn('idproductos',array_keys($this->almacenProductos));
     }
 
     public function render()
