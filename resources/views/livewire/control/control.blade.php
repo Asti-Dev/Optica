@@ -17,6 +17,7 @@
                 </div>
                 <div class="col-md-4 d-flex justify-content-center align-items-center">
                     <button class="btn btn-success" wire:click.prevent='validar()'>Validar</button>
+                    <button class="btn btn-secondary" wire:click.prevent="refresh">Limpiar</button>
                 </div>
             </div>
             <div class="col-10 row d-flex justify-content-between mt-3">
@@ -123,12 +124,12 @@
                                             <li class=" d-flex justify-content-between align-items-center">
                                                 Proveedor
                                                 <span
-                                                    class="badge badge-primary badge-pill">{{$almacenProducto['proveedor']->nombre}}</span>
+                                                    class="badge badge-primary badge-pill">{{$almacenProducto['proveedor']}}</span>
                                             </li>
                                             <li class=" d-flex justify-content-between align-items-center">
                                                 Marca
                                                 <span
-                                                    class="badge badge-primary badge-pill">{{$almacenProducto['marca']->nombre}}</span>
+                                                    class="badge badge-primary badge-pill">{{$almacenProducto['marca']}}</span>
                                             </li>
                                             <li class=" d-flex justify-content-between align-items-center">
                                                 Modelo
